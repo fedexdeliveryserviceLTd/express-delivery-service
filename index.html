@@ -1,0 +1,119 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#071b35">
+  <title>Express Delivery Service</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f3f6fb;
+      color: #17243a;
+    }
+    header {
+      background: #071b35;
+      color: white;
+      padding: 22px 18px;
+      text-align: center;
+    }
+    header h1 { margin: 0 0 8px; font-size: 25px; }
+    header p { margin: 0; color: #c9d8ef; }
+    main { max-width: 600px; margin: 28px auto; padding: 0 16px; }
+    .hero {
+      background: white;
+      padding: 24px;
+      border-radius: 16px;
+      box-shadow: 0 5px 20px #10204012;
+    }
+    h2 { margin-top: 0; }
+    label { display: block; margin: 16px 0 7px; font-weight: bold; }
+    input, textarea {
+      width: 100%;
+      padding: 13px;
+      border: 1px solid #cbd5e1;
+      border-radius: 9px;
+      font-size: 16px;
+      background: white;
+    }
+    textarea { min-height: 85px; resize: vertical; }
+    button {
+      width: 100%;
+      margin-top: 20px;
+      padding: 15px;
+      background: #087443;
+      color: white;
+      border: 0;
+      border-radius: 9px;
+      font-size: 17px;
+      font-weight: bold;
+    }
+    #message { margin-top: 15px; line-height: 1.5; }
+    footer { text-align: center; padding: 24px; color: #64748b; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🚚 Express Delivery Service</h1>
+    <p>Fast, reliable delivery from pickup to destination.</p>
+  </header>
+
+  <main>
+    <section class="hero">
+      <h2>Book a Delivery</h2>
+      <p>Enter your details to prepare your delivery request.</p>
+
+      <form id="orderForm">
+        <label for="customer">Full name</label>
+        <input id="customer" name="customer" required autocomplete="name">
+
+        <label for="phone">Phone number</label>
+        <input id="phone" name="phone" type="tel" required autocomplete="tel">
+
+        <label for="pickup">Pickup address</label>
+        <textarea id="pickup" name="pickup" required></textarea>
+
+        <label for="destination">Delivery address</label>
+        <textarea id="destination" name="destination" required></textarea>
+
+        <label for="package">Package description (optional)</label>
+        <textarea id="package" name="package"></textarea>
+
+        <button type="submit">Prepare Delivery Request</button>
+        <p id="message" role="status"></p>
+      </form>
+    </section>
+  </main>
+
+  <footer>Express Delivery Service · Thank you for choosing us.</footer>
+
+  <script>
+    document.getElementById("orderForm").addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      const values = {
+        name: document.getElementById("customer").value.trim(),
+        phone: document.getElementById("phone").value.trim(),
+        pickup: document.getElementById("pickup").value.trim(),
+        destination: document.getElementById("destination").value.trim(),
+        package: document.getElementById("package").value.trim()
+      };
+
+      const message = [
+        "Hello, I want to book a delivery.",
+        "Name: " + values.name,
+        "Phone: " + values.phone,
+        "Pickup: " + values.pickup,
+        "Destination: " + values.destination,
+        "Package: " + (values.package || "Not specified")
+      ].join("\n");
+
+      document.getElementById("message").textContent =
+        "Your request is ready, but online submission is not connected yet. We will connect the database and WhatsApp before launch.";
+    });
+  </script>
+</body>
+</html>
