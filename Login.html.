@@ -82,13 +82,13 @@
     const SUPABASE_URL =
       "https://cimupgbvbaiterqwydop.supabase.co";
     const SUPABASE_PUBLISHABLE_KEY =
-      "PASTE_YOUR_PUBLISHABLE_KEY_HERE";
+      "sb_publishable_upcOjh-2_GZIOpYttWylHg_BWoKW18F";
 
     const message = document.getElementById("message");
     const loginForm = document.getElementById("loginForm");
     const signupButton = document.getElementById("signup");
 
-    if (SUPABASE_PUBLISHABLE_KEY === "PASTE_YOUR_PUBLISHABLE_KEY_HERE") {
+    if (SUPABASE_PUBLISHABLE_KEY === "sb_publishable_upcOjh-2_GZIOpYttWylHg_BWoKW18F") {
       message.textContent =
         "Setup still needed: add your Supabase publishable key to connect login.";
     }
