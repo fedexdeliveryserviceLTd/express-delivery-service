@@ -1,5 +1,4 @@
-
-<!DOCTYPE html>
+DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -133,5 +132,3 @@
         : "Account request submitted. Check your email if confirmation is required.";
     });
   </script>
-</body>
-</html>
