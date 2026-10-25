@@ -88,6 +88,30 @@ DOCTYPE html>
     const message = document.getElementById("message");
     const loginForm = document.getElementById("loginForm");
     const signupButton = document.getElementById("signup");
+    
+const forgotPasswordLink = document.getElementById("forgotPassword");
+
+forgotPasswordLink.addEventListener("click", async (event) => {
+  event.preventDefault();
+
+  const email = document.getElementById("email").value.trim();
+
+  if (!email) {
+    message.textContent = "Enter your email address first.";
+    return;
+  }
+
+  message.textContent = "Sending recovery email...";
+
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: "https://fedexdeliveryserviceltd.github.io/express-delivery-service/reset-password.html"
+  });
+
+  message.textContent = error
+    ? error.message
+    : "Check your email for the password recovery link.";
+});
+
 
     if (SUPABASE_PUBLISHABLE_KEY === "sb_publishable_upcOjh-2_GZIOpYttWylHg_BWoKW18F") {
       message.textContent =
