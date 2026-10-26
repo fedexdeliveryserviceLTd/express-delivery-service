@@ -198,7 +198,7 @@
 
     const text = await response.text();
     if (!response.ok) {
-      throw new Error("The request could not be completed. Check your database permissions and setup.");
+  throw new Error("Supabase error " + response.status + ": " + text);
     }
     return text ? JSON.parse(text) : null;
   }
@@ -257,10 +257,8 @@ event.target.reset();
 
       event.target.reset();
     } catch (error) {
-      message.textContent = "Request not submitted. The database permissions or connection need to be configured first.";
-    }
+    message.textContent = "Request not submitted: " + error.message;
   });
-
   document.getElementById("trackingForm").addEventListener("submit", async event => {
     event.preventDefault();
     const message = document.getElementById("trackingMessage");
