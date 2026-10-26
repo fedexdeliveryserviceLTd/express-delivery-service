@@ -237,16 +237,23 @@ message.textContent =
 
 event.target.reset();
 
-      const result = await supabaseRequest("delivery_orders", {
-        method: "POST",
-        headers: { "Prefer": "return=representation" },
-        body: JSON.stringify(order)
-      });
+            const trackingNumber = await supabaseRequest(
+        "rpc/submit_delivery_request",
+        {
+          method: "POST",
+          body: JSON.stringify({
+            p_customer_name: order.customer_name,
+            p_phone: order.phone,
+            p_pickup_address: order.pickup_address,
+            p_delivery_address: order.delivery_address,
+            p_package_description: order.package_description
+          })
+        }
+      );
 
-      const shipment = result && result[0];
-      message.textContent = shipment && shipment.tracking_number
-        ? "Request submitted. Your tracking number is: " + shipment.tracking_number
-        : "Request submitted. Contact the delivery team to confirm your tracking number.";
+      message.textContent =
+        "Request submitted successfully! Your tracking number is: " +
+        trackingNumber;
 
       event.target.reset();
     } catch (error) {
