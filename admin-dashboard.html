@@ -1,0 +1,145 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin Dashboard | Express Delivery Service</title>
+<style>
+body{font-family:Arial,sans-serif;background:#f1f5f9;color:#172033;margin:0;padding:18px}
+main{max-width:850px;margin:auto}
+.card{background:white;padding:18px;margin:14px 0;border-radius:12px;overflow-wrap:anywhere}
+button,select{padding:12px;border-radius:7px;border:1px solid #cbd5e1;margin:6px 4px 6px 0;font-size:15px}
+button{background:#123b70;color:white;font-weight:bold}
+p{line-height:1.6;white-space:pre-line}
+</style>
+</head>
+<body>
+<main>
+<h1>Express Delivery Service</h1>
+<h2>Admin Dashboard</h2>
+<div class="card">
+<p id="message">Checking admin access...</p>
+<button id="refresh" hidden>Refresh orders</button>
+<button id="logout" hidden>Sign out</button>
+</div>
+<div id="orders"></div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const db = window.supabase.createClient(
+  "https://cimupgbvbaiterqwydop.supabase.co",
+  "sb_publishable_upcOjh-2_GZIOpYttWylHg_BWoKW18F"
+);
+
+const message = document.getElementById("message");
+const orders = document.getElementById("orders");
+const statuses = [
+  "Pending", "Confirmed", "Picked up", "In transit",
+  "Out for delivery", "Delivered", "Cancelled"
+];
+
+async function start() {
+  const {data:{session}, error} = await db.auth.getSession();
+
+  if (error || !session) {
+    message.textContent = "Please sign in first using your administrator account.";
+    return;
+  }
+
+  const {data:admin, error:adminError} =
+    await db.rpc("is_current_user_admin");
+
+  if (adminError || admin !== true) {
+    message.textContent =
+      "This account is not authorized as an administrator.";
+    return;
+  }
+
+  document.getElementById("refresh").hidden = false;
+  document.getElementById("logout").hidden = false;
+  await loadOrders();
+}
+
+async function loadOrders() {
+  message.textContent = "Loading delivery requests...";
+  orders.replaceChildren();
+
+  const {data, error} = await db.rpc("admin_list_delivery_orders");
+
+  if (error) {
+    message.textContent = "Error loading orders: " + error.message;
+    return;
+  }
+
+  message.textContent = "Delivery requests: " + data.length;
+
+  if (!data.length) {
+    orders.textContent = "No delivery requests found.";
+    return;
+  }
+
+  data.forEach(order => {
+    const card = document.createElement("section");
+    card.className = "card";
+
+    const title = document.createElement("h3");
+    title.textContent = order.customer_name + " — " +
+      order.tracking_number;
+    card.appendChild(title);
+
+    const details = document.createElement("p");
+    details.textContent =
+      "Phone: " + order.phone +
+      "\nPickup: " + order.pickup_address +
+      "\nDelivery: " + order.delivery_address +
+      "\nPackage: " + (order.package_description || "Not specified") +
+      "\nCurrent status: " + order.status;
+    card.appendChild(details);
+
+    const select = document.createElement("select");
+    statuses.forEach(status => {
+      const option = document.createElement("option");
+      option.value = status;
+      option.textContent = status;
+      select.appendChild(option);
+    });
+    select.value = statuses.includes(order.status)
+      ? order.status : "Pending";
+    card.appendChild(select);
+
+    const save = document.createElement("button");
+    save.textContent = "Save status";
+    save.onclick = async () => {
+      save.disabled = true;
+      const {data:ok, error} = await db.rpc(
+        "admin_update_delivery_status",
+        {p_order_id: order.id, p_status: select.value}
+      );
+      save.disabled = false;
+
+      if (error) {
+        alert("Status update failed: " + error.message);
+      } else if (ok) {
+        alert("Delivery status updated.");
+        await loadOrders();
+      } else {
+        alert("Order not found.");
+      }
+    };
+    card.appendChild(save);
+    orders.appendChild(card);
+  });
+}
+
+document.getElementById("refresh").onclick = loadOrders;
+document.getElementById("logout").onclick = async () => {
+  await db.auth.signOut();
+  location.href = "login.html";
+};
+
+start();
+</script>
+</body>
+</html>
