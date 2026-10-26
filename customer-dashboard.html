@@ -1,0 +1,65 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Customer Dashboard | Express Delivery Service</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; padding: 24px; background: #f3f6fa; color: #172033; }
+    main { max-width: 650px; margin: 25px auto; background: white; padding: 24px; border-radius: 14px; }
+    h1 { color: #12356b; }
+    .card { padding: 16px; margin: 14px 0; background: #eef3fb; border-radius: 10px; }
+    a, button { display: inline-block; padding: 12px 16px; margin: 6px 4px 6px 0; border: 0; border-radius: 8px; background: #12356b; color: white; text-decoration: none; cursor: pointer; }
+    #message { color: #a12626; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>Express Delivery Service</h1>
+  <h2>Customer Dashboard</h2>
+  <p id="message">Checking your login...</p>
+  <section id="dashboard" hidden>
+    <div class="card">
+      <strong>Signed in as:</strong>
+      <p id="email"></p>
+    </div>
+    <div class="card">
+      <h3>Your deliveries</h3>
+      <p>Use shipment tracking to check your parcel's progress.</p>
+      <a href="index.html">Book or track a delivery</a>
+    </div>
+    <button id="signout">Sign out</button>
+  </section>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = "https://cimupgbvbaiterqwydop.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_upcOjh-2_GZIOpYttWylHg_BWoKW18F";
+const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+
+async function start() {
+  const { data: { user }, error } = await client.auth.getUser();
+  const message = document.getElementById("message");
+  if (error || !user) {
+    message.textContent = "Please sign in to view your customer dashboard.";
+    const link = document.createElement("a");
+    link.href = "login.html";
+    link.textContent = "Go to Login";
+    message.appendChild(document.createElement("br"));
+    message.appendChild(link);
+    return;
+  }
+  message.textContent = "You are signed in.";
+  document.getElementById("email").textContent = user.email || "Customer";
+  document.getElementById("dashboard").hidden = false;
+}
+
+document.getElementById("signout").addEventListener("click", async () => {
+  await client.auth.signOut();
+  window.location.href = "login.html";
+});
+start();
+</script>
+</body>
+</html>
