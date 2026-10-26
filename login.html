@@ -113,7 +113,7 @@ forgotPasswordLink.addEventListener("click", async (event) => {
 });
 
 
-    if (SUPABASE_PUBLISHABLE_KEY === "sb_publishable_upcOjh-2_GZIOpYttWylHg_BWoKW18F") {
+    if (!SUPABASE_PUBLISHABLE_KEY || SUPABASE_PUBLISHABLE_KEY.includes("PASTE_YOUR")) {
       message.textContent =
         "Setup still needed: add your Supabase publishable key to connect login.";
     }
