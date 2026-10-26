@@ -204,61 +204,42 @@
   }
 
   document.getElementById("bookingForm").addEventListener("submit", async event => {
-    event.preventDefault();
-    const message = document.getElementById("bookingMessage");
-    message.textContent = "Submitting your request…";
+  event.preventDefault();
 
-    const order = {
-      customer_name: document.getElementById("customer").value.trim(),
-      phone: document.getElementById("phone").value.trim(),
-      pickup_address: document.getElementById("pickup").value.trim(),
-      delivery_address: document.getElementById("destination").value.trim(),
-      package_description: document.getElementById("package").value.trim(),
-      status: "Pending"
-    };
+  const message = document.getElementById("bookingMessage");
+  message.textContent = "Submitting your request…";
 
-    try {
-const trackingNumber = await supabaseRequest(
-  "rpc/submit_delivery_request",
-  {
-    method: "POST",
-    body: JSON.stringify({
-      p_customer_name: order.customer_name,
-      p_phone: order.phone,
-      p_pickup_address: order.pickup_address,
-      p_delivery_address: order.delivery_address,
-      p_package_description: order.package_description
-    })
+  const order = {
+    customer_name: document.getElementById("customer").value.trim(),
+    phone: document.getElementById("phone").value.trim(),
+    pickup_address: document.getElementById("pickup").value.trim(),
+    delivery_address: document.getElementById("destination").value.trim(),
+    package_description: document.getElementById("package").value.trim()
+  };
+
+  try {
+    const trackingNumber = await supabaseRequest(
+      "rpc/submit_delivery_request",
+      {
+        method: "POST",
+        body: JSON.stringify({
+          p_customer_name: order.customer_name,
+          p_phone: order.phone,
+          p_pickup_address: order.pickup_address,
+          p_delivery_address: order.delivery_address,
+          p_package_description: order.package_description
+        })
+      }
+    );
+
+    message.textContent =
+      "Booking successful! Tracking number: " + trackingNumber;
+
+    event.target.reset();
+  } catch (error) {
+    message.textContent = "Booking failed: " + error.message;
   }
-);
-
-message.textContent =
-  "Request submitted. Your tracking number is: " + trackingNumber;
-
-event.target.reset();
-
-            const trackingNumber = await supabaseRequest(
-        "rpc/submit_delivery_request",
-        {
-          method: "POST",
-          body: JSON.stringify({
-            p_customer_name: order.customer_name,
-            p_phone: order.phone,
-            p_pickup_address: order.pickup_address,
-            p_delivery_address: order.delivery_address,
-            p_package_description: order.package_description
-          })
-        }
-      );
-
-      message.textContent =
-        "Request submitted successfully! Your tracking number is: " +
-        trackingNumber;
-
-      event.target.reset();
-    } catch (error) {
-    message.textContent = "Request not submitted: " + error.message;
-  });
+});
   document.getElementById("trackingForm").addEventListener("submit", async event => {
     event.preventDefault();
     const message = document.getElementById("trackingMessage");
