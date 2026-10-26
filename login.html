@@ -136,7 +136,7 @@ forgotPasswordLink.addEventListener("click", async (event) => {
 
       message.textContent = error
         ? error.message
-        : "Login successful. Customer dashboard setup is the next step.";
+        : (window.location.href = "customer-dashboard.html");
     });
 
     signupButton.addEventListener("click", async () => {
